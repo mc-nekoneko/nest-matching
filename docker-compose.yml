@@ -1,0 +1,40 @@
+version: '3.8'
+services:
+  nest-api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nest-api
+    restart: always
+    ports:
+      - 3000:3000
+    depends_on:
+      - nest-mysql
+    env_file:
+      - .env
+
+  nest-mysql:
+    image: mysql:8
+    container_name: nest-mysql
+    restart: always
+    ports:
+      - 3306:3306
+    env_file:
+      - .env
+    volumes:
+      - nest-mysql:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin
+    container_name: nest-phpmyadmin
+    restart: always
+    links:
+      - mysql
+    ports:
+      - 8080:80
+    env_file:
+      - .env
+
+volumes:
+  nest-mysql:
+    name: nest-mysql-db
